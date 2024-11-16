@@ -1,39 +1,31 @@
-def simpson_rule(f, a, b, n):
-    """
-    Método de Simpson para integração numérica.
+import numpy as np
 
+def simpson_rule(f, a, b, epsilon=1e-3):
+    """
+    Calcula a integral de f(x) no intervalo [a, b] usando a regra de Simpson,
+    ajustando automaticamente o número de subintervalos para atingir a precisão desejada.
+    
     Parâmetros:
     - f: função a ser integrada.
     - a: limite inferior de integração.
     - b: limite superior de integração.
-    - n: número de subintervalos (deve ser par).
+    - epsilon: tolerância para o erro.
 
     Retorna:
-    - Aproximação da integral de f(x) de a até b.
+    - Aproximação da integral.
+    - Tabela de pontos (x_i, y_i).
     """
-    if n % 2 != 0:
-        raise ValueError("O número de subintervalos (n) deve ser par para o método de Simpson.")
+    n = 2  # Começamos com um número par de subintervalos
+    integral_prev = 0
+    while True:
+        x = np.linspace(a, b, n + 1)
+        y = f(x)
+        h = (b - a) / n
+        integral = h / 3 * (y[0] + 2 * np.sum(y[2:-1:2]) + 4 * np.sum(y[1::2]) + y[-1])
+        if abs(integral - integral_prev) < epsilon:
+            break
+        integral_prev = integral
+        n *= 2
 
-    h = (b - a) / n
-    result = f(a) + f(b)
-
-    # Soma dos termos com peso 4
-    for i in range(1, n, 2):
-        result += 4 * f(a + i * h)
-
-    # Soma dos termos com peso 2
-    for i in range(2, n, 2):
-        result += 2 * f(a + i * h)
-
-    result *= h / 3
-    return result
-
-if __name__ == "__main__":
-    import math
-
-    def f(x):
-        return math.sin(x)
-
-    a, b, n = 0, math.pi, 10
-    integral = simpson_rule(f, a, b, n)
-    print(f"Método de Simpson: Integral = {integral:.6f}")
+    points = np.column_stack((x, y))  # Tabela de pontos (x_i, y_i)
+    return integral, points

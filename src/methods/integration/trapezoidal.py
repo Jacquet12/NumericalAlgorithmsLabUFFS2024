@@ -1,29 +1,31 @@
-def trapezoidal_rule(f, a, b, n):
-    """
-    Método dos Trapézios para integração numérica.
+import numpy as np
 
+def trapezoidal_rule(f, a, b, epsilon=1e-3):
+    """
+    Calcula a integral de f(x) no intervalo [a, b] usando a regra dos trapézios,
+    ajustando automaticamente o número de subintervalos para atingir a precisão desejada.
+    
     Parâmetros:
     - f: função a ser integrada.
     - a: limite inferior de integração.
     - b: limite superior de integração.
-    - n: número de subintervalos.
+    - epsilon: tolerância para o erro.
 
     Retorna:
-    - Aproximação da integral de f(x) de a até b.
+    - Aproximação da integral.
+    - Tabela de pontos (x_i, y_i).
     """
-    h = (b - a) / n
-    result = (f(a) + f(b)) / 2
-    for i in range(1, n):
-        result += f(a + i * h)
-    result *= h
-    return result
+    n = 1
+    integral_prev = 0
+    while True:
+        x = np.linspace(a, b, n + 1)
+        y = f(x)
+        h = (b - a) / n
+        integral = h * (0.5 * y[0] + np.sum(y[1:-1]) + 0.5 * y[-1])
+        if abs(integral - integral_prev) < epsilon:
+            break
+        integral_prev = integral
+        n *= 2
 
-if __name__ == "__main__":
-    import math
-
-    def f(x):
-        return math.sin(x)
-
-    a, b, n = 0, math.pi, 10
-    integral = trapezoidal_rule(f, a, b, n)
-    print(f"Método dos Trapézios: Integral = {integral:.6f}")
+    points = np.column_stack((x, y))  # Tabela de pontos (x_i, y_i)
+    return integral, points

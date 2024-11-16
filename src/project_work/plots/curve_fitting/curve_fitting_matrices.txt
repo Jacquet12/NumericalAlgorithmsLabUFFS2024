@@ -1,0 +1,9 @@
+Coeficientes Obtidos:
+Ajuste Linear: [  4.76735447 -17.01987559]
+Ajuste Exponencial: a = 3.4986, b = 0.1128
+Ajuste Polinomial: [-5.71903031e-03  4.20305714e-01 -4.90288861e+00  5.10656436e+01]
+
+Valores de R²:
+R² Linear: 0.9373
+R² Exponencial: 0.0520
+R² Polinomial: 0.9418
