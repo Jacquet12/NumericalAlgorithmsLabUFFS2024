@@ -1,4 +1,5 @@
-def runge_kutta_fourth_order(f, x0, y0, h, n):
+# src/methods/differentialEquations/runge_kutta.py
+def runge_kutta_fourth_order(f, x0, y0, h, x_end):
     """
     Método de Runge-Kutta de quarta ordem para resolver EDOs.
 
@@ -7,7 +8,7 @@ def runge_kutta_fourth_order(f, x0, y0, h, n):
     - x0: valor inicial de x.
     - y0: valor inicial de y.
     - h: tamanho do passo.
-    - n: número de iterações.
+    - x_end: valor final de x.
 
     Retorna:
     - xs: lista de valores de x.
@@ -15,20 +16,21 @@ def runge_kutta_fourth_order(f, x0, y0, h, n):
     """
     xs = [x0]
     ys = [y0]
+    while xs[-1] < x_end:
+        x = xs[-1]
+        y = ys[-1]
+        k1 = h * f(x, y)
+        k2 = h * f(x + h / 2, y + k1 / 2)
+        k3 = h * f(x + h / 2, y + k2 / 2)
+        k4 = h * f(x + h, y + k3)
 
-    for _ in range(n):
-        k1 = f(xs[-1], ys[-1])
-        k2 = f(xs[-1] + h / 2, ys[-1] + h / 2 * k1)
-        k3 = f(xs[-1] + h / 2, ys[-1] + h / 2 * k2)
-        k4 = f(xs[-1] + h, ys[-1] + h * k3)
-
-        y_next = ys[-1] + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
-        x_next = xs[-1] + h
+        x_next = x + h
+        y_next = y + (k1 + 2 * k2 + 2 * k3 + k4) / 6
 
         xs.append(x_next)
         ys.append(y_next)
-
     return xs, ys
+
 
 if __name__ == "__main__":
     # Teste do Método de Runge-Kutta de Quarta Ordem
